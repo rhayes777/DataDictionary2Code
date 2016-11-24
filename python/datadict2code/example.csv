@@ -1,0 +1,217 @@
+ModelObject,Base object of all other objects.,"id
+date_created (datetime)
+date_updated (datetime)",,,,
+Client,A client of Farming Online. ,"first_name (string)
+last_name (string)
+company_name (string?)
+building (string)
+address (string)
+postcode (string)
+phone (string?)
+mobile (string?)
+email (string)
+invoice_email (string?)
+adsl (ADSL?)
+web_auth (WebAuth?)
+client_roles ([ClientRole])
+email_exclusions ([EmailExclusion])
+dishonour (Dishonour?)",,,,
+Profile,"A description of the interests of a Farming Online client. These
+interests are encoded in a string of numbers.","profile_type (string)
+farmer (string)
+non_farmer (string)
+client (Client)",,,,
+ADSL,The ADSL details of a Farming Online Client.,"line_number (string)
+client (Client)",,,,
+Email,"The Farming Online email account details of a Farming Online 
+Client.","email (string)
+client (Client)",,,,
+WebAuth,"The web authentication details of a Farming 
+Online Client.","username
+password (sha256 encrypted string)
+client (Client)",,,,
+Comment,A comment on a client.,text (string),,,,
+Reminder,"A reminder to be sent to an email address on a particular date 
+indicatingthat some task associated with a client needs to be 
+performed.","text (string)
+email (String)
+client (Client)
+date (datetime)",,,,
+EmailType,A type of email dispatched by Farming Online,"name (string)
+email_exclusions ([EmailExclusion])",,,,
+EmailExclusion,"A relationship between a client and email type 
+indicating that the user in question does not 
+wish to receive that type of email.","client (Client)
+email_type (EmailType)",,,,
+PermissionKey,"A key that provides a client a particular 
+permission within the system.","key (string)
+name (string)",,,,
+Role,"A role that can be assigned to clients to give
+them particular sets of permissions.","name (string)
+permission_keys ([PermissionKey])
+client_roles ([ClientRole])",,,,
+ClientRole,Maps the many to many relationship between clients and roles.,"role (Role)
+client (Client)
+expiry_date (datetime)",,,,
+Dishonour,An object indicating that this client is in arrears.,"status (integer)
+client (Client)",,,,
+Article,A news article.,"body (html)
+title (string)
+blurb (string)
+image (url)
+created_by (Author)
+updated_by (Author)
+start_date (datetime)
+end_date (datetime)
+priority (integer)
+weight (double)
+linked_to ([Article])
+linked_from ([Article])
+categories ([Category])
+keywords ([Keyword])
+views ([ArticleView])
+view_count ([ViewCount])",,,,
+Category,A category of news. News articles can be in one or more categories.,"name (string)
+articles ([Article])
+keywords ([Keyword])",,,,
+ArticleView,An instance of a user viewing an article.,article (Article),,,,
+KeyWord,A key word found in an article usually associated with a category.,"word (string)
+articles ([Article])
+categories ([Category])",,,,
+ViewCount,The total times an article has been viewed.,"article (Article)
+count (integer)",,,,
+Author:Client,The author of an article.,"byline (string)
+articles_created ([Article])
+articles_updated ([Article])",,,,
+Company,A real world company indexed in the Farming Online directory.,"name (string)
+description (string)
+url (urlstring)
+image (urlstring)
+hosted (boolean)
+live (boolean)
+ad_level (AdLevel)
+categories ([Category])",,,,
+AdLevel,The level of advertising provided to a company in the directory.,"description (string)
+companies ([Company])",,,,
+Category,A category of company found in the directory.,"name
+companies ([Company])",,,,
+Location,"A real life location, such as a field, that a client
+has added to the system.","name (string)
+centre_point  (Point)
+is_removed (boolean)",,,,
+WaterAwareClient:Client,A user of the WaterAware app,locations ([WaterAwareLocation]),,,,
+ReefAwareClient:Client,A user of the ReefAware app,locations ([ReefAwareLocation]),,,,
+WaterAwareLocation:Location,,"previous_crop (Crop)
+outcode (Outcode)
+met_office_site (MetOfficeSite)
+soil_texture (SoilTexture)
+morecs_square (MorecsSquare)
+crop (Crop)
+client (WaterAwareClient)",,,,
+Crop,A crop or collection of crops.,"name (string)
+code (integer)
+current_locations ([WaterAwareLocation])
+past_locations ([WaterAwareLocation])",,,,
+MorecsSquare,A 40km grid square for which weather data is provided.,"code (integer)
+centre_point (Point)",,,,
+SoilTexture,A particular soil texture.,"name
+smd_records ([SMDRecord])
+smd_maxes ([SMDMax])
+locations ([WaterAwareLocation])",,,,
+Outcode,A postal outcode in the UK.,"outcode (string)
+centre_point (Point)
+locations ([WaterAwareLocation])",,,,
+SMDEntry,"An entry associating a given soil moisture deficit value to a morecs
+square, crop and soil texture.","smd (double, mm)
+crop (Crop)
+soil_texture (SoilTexture)
+morecs_square (MorecsSquare)",,,,
+SMDRecord:SMDEntry,"A soil moisture deficit as modelled by the Met Office for a given
+morecs square, crop type and soil texture on a given date.",date (date),,,,
+SMDMax:SMDEntry,"A maximum possible soil moisture deficit as modelled by the Met
+Office for a given morecs square, crop type and soil texture.",,,,,
+ReefAwareLocation:Location,,"geom (Polygon)
+catchment (Catchment)
+primary_soil_type (SoilType)
+bbox (Polygon)
+weather_square_g (WeatherSquareG)
+weather_square_r (WeatherSquareR)
+slope_coverage3 (double)
+slope_coverage5 (double)
+waterbody_coverage (double)
+low_oc_coverage (double)
+soil_coverages ([SoilCoverage])
+client (ReefAwareClient)",,,,
+SoilType,A particular soil type.,"name (string)
+code (integer)
+porosity (double)
+effective_porosity (double)
+suction_head (double)
+hydraulic_conductivity (double)
+soil_texture (SoilTexture)
+locations ([Location])",,,,
+Catchment,A river catchment.,"name
+geom (Polygon)
+region (Region)",,,,
+WeatherSquare,A grid square for which weather data is provided.,"centre_point
+x_position (int)
+y_position (int)
+centre_point (Point)
+weather_forecasts ([WeatherForecast])",,,,
+WeatherSquareG:WeatherSquare,"A low resolution grid square for which weather data is provided
+globally.",,,,,
+WeatherSquareR:WeatherSquare,"A high resolution grid square for which weather data is provided
+locally.",,,,,
+SoilCoverage,The fractional area of a location covered by a particular soil type.,"soil_type (SoilType)
+coverage (double)
+location (ReefAwareLocation)",,,,
+Region,A geographic region.,name,,,,
+ReefAwareRegion:Region,A region used in the ReefAware app,catchments ([Catchment]),,,,
+WeatherForecast,A weather forecast,"soil_moisture
+weather_square (WeatherSquare)
+weather_model_file (WeatherModelFile)
+soil_moisture (double, mm)
+soil_moisture_top_layer (double, mm)
+precipitation_intensity (double, mm/h)
+temperature (double, C)
+wind_speed (double, m/s)
+wind_direction (double, rad)",,,,
+WeatherModelFile,A file providing weather data for one time step,"time_step (integer)
+date_valid (datetime)
+weather_model_run (WeatherModelRun)
+weather_forecasts ([WeatherForecast])
+date_time (datetime)",,,,
+WeatherModelRun,A run of a weather model,"date_time (datetime)
+model_type (integer, 0 = G, 1 = R)
+weather_model_files ([WeatherModelFile])
+weather_forecats ([WeatherForecast])",,,,
+Commodity,A commodity that is traded.,"name (string)
+exchange (Exchange)
+futures ([Future])
+daily_prices ([DailyPrice])
+crop (Crop?)",,,,
+Exchange,An exchange at which a commodity is traded.,"name (string)
+code (string)
+commodities ([Commodity])",,,,
+Future,A Future contract on a given commodity.,"contract_code (string)
+exchange (Exchange)
+contract_date (date)
+last_trade (double)
+difference (double)
+open (double)
+high (double)
+low (double)
+close (double)
+volume (double)",,,,
+DailyPrice,The daily price of a given commodity.,"commodity (Commodity)
+region (PriceRegion)
+month (datetime)
+price (double)
+change (double)",,,,
+Currency,A form of money.,"code (string)
+name (string)
+exchange_rates ([ExchangeRate])",,,,
+ExchangeRate,The rate of exchange between two currencies.,"from_currency (Currency)
+to_currency (Currency)
+rate (double)",,,,
+PriceRegion:Region,A region for which prices data is provided.,daily_prices ([DailyPrice]),,,,
