@@ -16,8 +16,11 @@ class BasicTestCase(unittest.TestCase):
         self.maker.add_class(class_name="SecondClass")
         self.maker.close()
         import model
-        self.assertEqual("Test", inspect.getmembers(model, inspect.isclass)[1][0])
-        self.assertEqual("SecondClass", inspect.getmembers(model, inspect.isclass)[0][0])
+        self.assertEqual("Test", inspect.getmembers(model, inspect.isclass)[2][0])
+        self.assertEqual("SecondClass", inspect.getmembers(model, inspect.isclass)[1][0])
+
+    # def test_attribute_creation(self):
+    #     self.maker.add_class(class_name="FunctionClass", attributes={"first_name": "String"})
 
 
 if __name__ == "__main__":
