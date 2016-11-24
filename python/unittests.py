@@ -16,11 +16,25 @@ class BasicTestCase(unittest.TestCase):
         self.maker.add_class(Class("SecondClass"))
         self.maker.write()
         import model
-        self.assertEqual("Test", inspect.getmembers(model, inspect.isclass)[2][0])
-        self.assertEqual("SecondClass", inspect.getmembers(model, inspect.isclass)[1][0])
+        self.assertTrue("Test" in map(lambda parts: parts[0], inspect.getmembers(model, inspect.isclass)))
+        self.assertTrue("SecondClass", inspect.getmembers(model, inspect.isclass)[1][0])
 
-    # def test_attribute_creation(self):
-    #     self.maker.add_class(class_name="FunctionClass", attributes={"first_name": "String"})
+    def test_attribute_creation(self):
+        cls = Class("Test")
+        cls.add_attribute("first_name", "string")
+        self.maker.add_class(cls)
+        self.maker.write()
+        import model
+
+        self.assertTrue("Test" in map(lambda parts: parts[0], inspect.getmembers(model, inspect.isclass)))
+        classes = inspect.getmembers(model, inspect.isclass)
+        att = filter(lambda att: att[0] == "first_name",
+                     inspect.getmembers(filter(lambda cls: cls[0] == "Test", classes)[0][1],
+                                        lambda a: not (inspect.isroutine(a))))[0]
+        self.assertEqual(att[0], "first_name")
+        # self.assertTrue("first_name" in
+        #                 map(lambda parts: parts[0], inspect.getmembers(inspect.getmembers(model, inspect.isclass)[1],
+        #                                                                lambda a: not (inspect.isroutine(a)))))
 
 
 if __name__ == "__main__":
