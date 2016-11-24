@@ -6,13 +6,17 @@ import os
 
 def get_class_double(module, class_name):
     classes = inspect.getmembers(module, inspect.isclass)
-    return filter(lambda cls: cls[0] == class_name, classes)[0]
+    ls = filter(lambda cls: cls[0] == class_name, classes)
+    if ls:
+        return ls[0]
 
 
 def get_attribute_double(module, class_name, function_name):
-    return filter(lambda att: att[0] == function_name,
-                     inspect.getmembers(get_class_double(module, class_name)[1],
-                                        lambda a: not (inspect.isroutine(a))))[0]
+    ls = filter(lambda att: att[0] == function_name,
+                inspect.getmembers(get_class_double(module, class_name)[1],
+                                   lambda a: not (inspect.isroutine(a))))
+    if ls:
+        return ls[0]
 
 
 class BasicTestCase(unittest.TestCase):
@@ -33,8 +37,8 @@ class BasicTestCase(unittest.TestCase):
     def test_attribute_creation(self):
         cls = Class("Test")
         cls.add_attribute("first_name", "string")
-        # cls.add_attribute("flt", "double")
-        # cls.add_attribute("intg", "integer")
+        cls.add_attribute("flt", "double")
+        cls.add_attribute("intg", "integer")
         self.maker.add_class(cls)
         self.maker.write()
         import model

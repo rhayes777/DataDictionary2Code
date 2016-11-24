@@ -22,6 +22,8 @@ class Class:
 
     def add_attribute(self, name, type_name):
         type_name = type_name.title()
+        if type_name == "Double":
+            type_name = "Float"
         self.type_names.add(type_name)
         self.attributes.append((name, type_name))
 
