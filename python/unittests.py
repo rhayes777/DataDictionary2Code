@@ -2,6 +2,7 @@ import unittest
 from datadict2code import Maker, Class
 import inspect
 import os
+from sqlalchemy.types import DateTime, String, Integer, Float
 
 
 def get_class_double(module, class_name):
@@ -50,6 +51,11 @@ class BasicTestCase(unittest.TestCase):
         self.assertEqual(get_attribute_double(model, "Test", "flt")[0], "flt")
         self.assertEqual(get_attribute_double(model, "Test", "intg")[0], "intg")
         self.assertEqual(get_attribute_double(model, "Test", "dt")[0], "dt")
+
+        self.assertTrue(isinstance(get_attribute_double(model, "Test", "dt")[1].type, DateTime))
+        self.assertTrue(isinstance(get_attribute_double(model, "Test", "flt")[1].type, Float))
+        self.assertTrue(isinstance(get_attribute_double(model, "Test", "intg")[1].type, Integer))
+        self.assertTrue(isinstance(get_attribute_double(model, "Test", "first_name")[1].type, String))
 
 
 if __name__ == "__main__":
