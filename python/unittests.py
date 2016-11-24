@@ -39,14 +39,17 @@ class BasicTestCase(unittest.TestCase):
         cls.add_attribute("first_name", "string")
         cls.add_attribute("flt", "double")
         cls.add_attribute("intg", "integer")
+        cls.add_attribute("dt", "datetime")
         self.maker.add_class(cls)
         self.maker.write()
         import model
 
         self.assertTrue("Test" in map(lambda parts: parts[0], inspect.getmembers(model, inspect.isclass)))
 
-        att = get_attribute_double(model, "Test", "first_name")
-        self.assertEqual(att[0], "first_name")
+        self.assertEqual(get_attribute_double(model, "Test", "first_name")[0], "first_name")
+        self.assertEqual(get_attribute_double(model, "Test", "flt")[0], "flt")
+        self.assertEqual(get_attribute_double(model, "Test", "intg")[0], "intg")
+        self.assertEqual(get_attribute_double(model, "Test", "dt")[0], "dt")
 
 
 if __name__ == "__main__":

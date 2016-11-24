@@ -24,6 +24,8 @@ class Class:
         type_name = type_name.title()
         if type_name == "Double":
             type_name = "Float"
+        if type_name == "Datetime":
+            type_name = "DateTime"
         self.type_names.add(type_name)
         self.attributes.append((name, type_name))
 
