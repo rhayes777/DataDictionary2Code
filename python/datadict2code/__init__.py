@@ -14,14 +14,21 @@ Base = declarative_base()
 """
 
 
+class Class:
+    def __init__(self, name):
+        self.name = name
+
+
 class Maker:
     def __init__(self, filename="model.py"):
         self.filename = filename
-        self.f = open(filename, "w")
-        self.f.write(HEAD_TEXT)
+        self.classes = []
 
     def add_class(self, class_name):
-        self.f.write("\n\nclass %s:%spass" % (class_name, NEW_LINE_INDENT))
+        self.classes.append(Class(class_name))
 
-    def close(self):
-        self.f.close()
+    def write(self):
+        with open(self.filename, "w") as f:
+            f.write(HEAD_TEXT)
+            for cls in self.classes:
+                f.write("\n\nclass %s:%spass" % (cls.name, NEW_LINE_INDENT))

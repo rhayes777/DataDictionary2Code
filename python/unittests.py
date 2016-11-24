@@ -14,7 +14,7 @@ class BasicTestCase(unittest.TestCase):
     def test_code_creation(self):
         self.maker.add_class(class_name="Test")
         self.maker.add_class(class_name="SecondClass")
-        self.maker.close()
+        self.maker.write()
         import model
         self.assertEqual("Test", inspect.getmembers(model, inspect.isclass)[2][0])
         self.assertEqual("SecondClass", inspect.getmembers(model, inspect.isclass)[1][0])
