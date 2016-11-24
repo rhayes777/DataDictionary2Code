@@ -24,8 +24,8 @@ class Maker:
         self.filename = filename
         self.classes = []
 
-    def add_class(self, class_name):
-        self.classes.append(Class(class_name))
+    def add_class(self, cls):
+        self.classes.append(cls)
 
     def write(self):
         with open(self.filename, "w") as f:
