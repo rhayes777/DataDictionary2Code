@@ -1,7 +1,15 @@
 INDENT = "    "
 NEW_LINE_INDENT = "\n%s" % INDENT
 
-def create_class(name):
-    text_file = open("classes.py", "w")
-    text_file.write("class %s:%spass" % (name, NEW_LINE_INDENT))
-    text_file.close()
+
+class Maker:
+
+    def __init__(self, filename="model.py"):
+        self.filename = filename
+        self.f = open(filename, "w")
+
+    def add_class(self, class_name):
+        self.f.write("class %s:%spass" % (class_name, NEW_LINE_INDENT))
+
+    def close(self):
+        self.f.close()
