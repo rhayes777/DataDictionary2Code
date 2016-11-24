@@ -13,9 +13,11 @@ class BasicTestCase(unittest.TestCase):
 
     def test_code_creation(self):
         self.maker.add_class(class_name="Test")
+        self.maker.add_class(class_name="SecondClass")
         self.maker.close()
         import model
-        self.assertTrue("Test" == inspect.getmembers(model, inspect.isclass)[0][0])
+        self.assertEqual("Test", inspect.getmembers(model, inspect.isclass)[1][0])
+        self.assertEqual("SecondClass", inspect.getmembers(model, inspect.isclass)[0][0])
 
 
 if __name__ == "__main__":

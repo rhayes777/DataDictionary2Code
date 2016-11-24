@@ -9,7 +9,7 @@ class Maker:
         self.f = open(filename, "w")
 
     def add_class(self, class_name):
-        self.f.write("class %s:%spass" % (class_name, NEW_LINE_INDENT))
+        self.f.write("\n\nclass %s:%spass" % (class_name, NEW_LINE_INDENT))
 
     def close(self):
         self.f.close()
