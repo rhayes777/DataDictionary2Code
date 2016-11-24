@@ -9,6 +9,12 @@ def get_class_double(module, class_name):
     return filter(lambda cls: cls[0] == class_name, classes)[0]
 
 
+def get_attribute_double(module, class_name, function_name):
+    return filter(lambda att: att[0] == function_name,
+                     inspect.getmembers(get_class_double(module, class_name)[1],
+                                        lambda a: not (inspect.isroutine(a))))[0]
+
+
 class BasicTestCase(unittest.TestCase):
     def setUp(self):
         self.maker = Maker()
@@ -34,10 +40,8 @@ class BasicTestCase(unittest.TestCase):
         import model
 
         self.assertTrue("Test" in map(lambda parts: parts[0], inspect.getmembers(model, inspect.isclass)))
-        
-        att = filter(lambda att: att[0] == "first_name",
-                     inspect.getmembers(get_class_double(model, "Test")[1],
-                                        lambda a: not (inspect.isroutine(a))))[0]
+
+        att = get_attribute_double(model, "Test", "first_name")
         self.assertEqual(att[0], "first_name")
 
 
