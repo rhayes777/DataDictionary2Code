@@ -35,7 +35,7 @@ class Class:
 
 
 class Maker:
-    def __init__(self, filename="model.py"):
+    def __init__(self, filename="model"):
         self.filename = filename
         self.classes = []
         self.type_names = set()
@@ -49,7 +49,7 @@ class Maker:
             self.is_relationship = True
 
     def write(self):
-        with open(self.filename, "w") as f:
+        with open("%s.py" % self.filename, "w") as f:
             f.write(HEAD_TEXT)
             if self.type_names:
                 f.write("\nfrom sqlalchemy import %s" % ", ".join(self.type_names))
