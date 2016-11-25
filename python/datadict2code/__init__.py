@@ -39,7 +39,7 @@ class Class:
         self.attributes.append((name, type_name))
 
     def write(self, f):
-        f.write("\n\nclass %s(Base):" % self.name)
+        f.write("\n\n\nclass %s(Base):" % self.name)
         f.write("%s__tablename__ = '%s'" % (NEW_LINE_INDENT, self.tablename))
         f.write("%sid = Column(Integer, primary_key=True)" % NEW_LINE_INDENT)
 
@@ -144,7 +144,7 @@ class Writer:
 
     def write(self):
         with open("%s.py" % self.filename, "w") as f:
-            f.write(HEAD_TEXT)
+
             many_to_manys = filter(lambda relationship: isinstance(relationship, ManyToMany), self.get_relationships())
             if many_to_manys:
                 self.type_names.add("Table")
@@ -153,6 +153,8 @@ class Writer:
             if self.is_relationship():
                 f.write("\nfrom sqlalchemy import ForeignKey")
                 f.write("\nfrom sqlalchemy.orm import relationship")
+
+            f.write(HEAD_TEXT)
 
             for many_to_many in many_to_manys:
                 many_to_many.write_association_table(f)
