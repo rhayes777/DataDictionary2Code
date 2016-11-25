@@ -21,8 +21,8 @@ def get_attribute_double(module, class_name, function_name):
 
 
 class BasicTestCase(unittest.TestCase):
-    # def tearDown(self):
-    #     os.system("rm model*")
+    def tearDown(self):
+        os.system("rm model*")
 
     def test_code_creation(self):
         maker = Maker("model_code_creation")
@@ -72,7 +72,7 @@ class BasicTestCase(unittest.TestCase):
         self.assertEqual(get_attribute_double(model_relationships, "Parent", "children")[0], "children")
         self.assertEqual(get_attribute_double(model_relationships, "Parent", "children")[1].backref, "parent")
 
-        self.assertEqual(get_attribute_double(model_relationships, "Child", "parent")[0], "parent")
+        self.assertEqual(get_attribute_double(model_relationships, "Child", "parent_id")[0], "parent_id")
 
 
 if __name__ == "__main__":
