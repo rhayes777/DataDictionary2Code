@@ -144,12 +144,11 @@ class Writer:
 
     def write(self):
         with open("%s.py" % self.filename, "w") as f:
-
             many_to_manys = filter(lambda relationship: isinstance(relationship, ManyToMany), self.get_relationships())
             if many_to_manys:
                 self.type_names.add("Table")
-            if self.type_names:
-                f.write("\nfrom sqlalchemy import %s" % ", ".join(self.type_names))
+
+            f.write("\nfrom sqlalchemy import %s" % ", ".join(self.type_names))
             if self.is_relationship():
                 f.write("\nfrom sqlalchemy import ForeignKey")
                 f.write("\nfrom sqlalchemy.orm import relationship")
