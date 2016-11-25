@@ -22,12 +22,13 @@ def lower_camel_case(name):
 
 
 class Class:
-    def __init__(self, name):
+    def __init__(self, name, parent=None):
         self.name = name
         self.attributes = []
         self.type_names = set()
         self.relationships = []
         self.tablename = lower_camel_case(name)
+        self.parent = parent
 
     def add_attribute(self, name, type_name):
         type_name = type_name.title()
@@ -39,9 +40,13 @@ class Class:
         self.attributes.append((name, type_name))
 
     def write(self, f):
-        f.write("\n\n\nclass %s(Base):" % self.name)
+        f.write("\n\n\nclass %s(%s):" % (self.name, self.parent.name if self.parent else "Base"))
         f.write("%s__tablename__ = '%s'" % (NEW_LINE_INDENT, self.tablename))
-        f.write("%sid = Column(Integer, primary_key=True)" % NEW_LINE_INDENT)
+        if self.parent:
+            f.write("%sid = Column(Integer, ForeignKey('%s.id', ondelete='CASCADE'), primary_key=True)" % (
+                NEW_LINE_INDENT, self.parent.tablename))
+        else:
+            f.write("%sid = Column(Integer, primary_key=True)" % NEW_LINE_INDENT)
 
         for attribute in self.attributes:
             f.write("%s%s = Column(%s)" % (NEW_LINE_INDENT, attribute[0], attribute[1]))
@@ -137,6 +142,11 @@ class Writer:
             if cls.relationships:
                 return True
 
+    def is_parent(self):
+        for cls in self.classes:
+            if cls.parent:
+                return True
+
     def get_relationships(self):
         relationships = set()
         for cls in self.classes:
@@ -150,7 +160,7 @@ class Writer:
                 self.type_names.add("Table")
 
             f.write("\nfrom sqlalchemy import %s" % ", ".join(self.type_names))
-            if self.is_relationship():
+            if self.is_relationship() or self.is_parent():
                 f.write("\nfrom sqlalchemy import ForeignKey")
                 f.write("\nfrom sqlalchemy.orm import relationship")
 

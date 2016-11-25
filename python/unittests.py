@@ -109,6 +109,23 @@ class WriterTestCase(unittest.TestCase):
         self.assertAttributeExists(model_many_to_many_relationship, "First", "second_list")
         self.assertAttributeExists(model_many_to_many_relationship, "Second", "first_list")
 
+    def test_inheritance(self):
+        writer = Writer("model_inheritance")
+        parent = Class("Parent")
+        child = Class("Child", parent=parent)
+
+        writer.add_class(parent)
+        writer.add_class(child)
+
+        writer.write()
+        import model_inheritance
+
+        self.assertTrue(issubclass(model_inheritance.Child, model_inheritance.Parent))
+
+
+class ParserTestCase(unittest.TestCase):
+    pass
+
 
 if __name__ == "__main__":
     unittest.main()
