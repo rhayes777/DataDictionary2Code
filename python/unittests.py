@@ -1,5 +1,5 @@
 import unittest
-from datadict2code import Maker, Class
+from datadict2code import *
 import inspect
 import os
 from sqlalchemy import DateTime, String, Integer, Float
@@ -62,7 +62,7 @@ class BasicTestCase(unittest.TestCase):
         maker = Maker("model_relationships")
         parent = Class("Parent")
         child = Class("Child")
-        parent.add_to_many("children", "parent", child)
+        OneToMany(parent, child, "children", "parent")
 
         maker.add_class(parent)
         maker.add_class(child)
@@ -71,6 +71,8 @@ class BasicTestCase(unittest.TestCase):
 
         self.assertEqual(get_attribute_double(model_relationships, "Parent", "children")[0], "children")
         self.assertEqual(get_attribute_double(model_relationships, "Parent", "children")[1].backref, "parent")
+
+        # self.assertEqual(get_attribute_double(model_relationships, "Child", "parent")[0], "parent")
 
 
 if __name__ == "__main__":
