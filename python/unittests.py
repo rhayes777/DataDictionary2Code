@@ -1,5 +1,6 @@
 import unittest
 from datadict2code.writer import *
+from datadict2code import *
 import inspect
 import os
 from sqlalchemy import DateTime, String, Integer, Float
@@ -124,7 +125,9 @@ class WriterTestCase(unittest.TestCase):
 
 
 class ParserTestCase(unittest.TestCase):
-    pass
+    def test_opening_parser(self):
+        parser = Parser("example.csv")
+        self.assertEqual(len(parser.class_list()), 52)
 
 
 if __name__ == "__main__":
