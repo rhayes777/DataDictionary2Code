@@ -24,7 +24,7 @@ Email,"The Farming Online email account details of a Farming Online
 Client.","email (string)
 client (Client)",,,,
 WebAuth,"The web authentication details of a Farming 
-Online Client.","username
+Online Client.","username (string)
 password (sha256 encrypted string)
 client (Client)",,,,
 Comment,A comment on a client.,text (string),,,,
@@ -90,7 +90,7 @@ ad_level (AdLevel)
 categories ([Category])",,,,
 AdLevel,The level of advertising provided to a company in the directory.,"description (string)
 companies ([Company])",,,,
-Category,A category of company found in the directory.,"name
+Category,A category of company found in the directory.,"name (string)
 companies ([Company])",,,,
 Location,"A real life location, such as a field, that a client
 has added to the system.","name (string)
@@ -111,7 +111,7 @@ current_locations ([WaterAwareLocation])
 past_locations ([WaterAwareLocation])",,,,
 MorecsSquare,A 40km grid square for which weather data is provided.,"code (integer)
 centre_point (Point)",,,,
-SoilTexture,A particular soil texture.,"name
+SoilTexture,A particular soil texture.,"name (string)
 smd_records ([SMDRecord])
 smd_maxes ([SMDMax])
 locations ([WaterAwareLocation])",,,,
@@ -147,7 +147,7 @@ suction_head (double)
 hydraulic_conductivity (double)
 soil_texture (SoilTexture)
 locations ([Location])",,,,
-Catchment,A river catchment.,"name
+Catchment,A river catchment.,"name (string)
 geom (Polygon)
 region (Region)",,,,
 WeatherSquare,A grid square for which weather data is provided.,"centre_point
@@ -162,9 +162,9 @@ locally.",,,,,
 SoilCoverage,The fractional area of a location covered by a particular soil type.,"soil_type (SoilType)
 coverage (double)
 location (ReefAwareLocation)",,,,
-Region,A geographic region.,name,,,,
+Region,A geographic region.,name (string),,,,
 ReefAwareRegion:Region,A region used in the ReefAware app,catchments ([Catchment]),,,,
-WeatherForecast,A weather forecast,"soil_moisture
+WeatherForecast,A weather forecast,"soil_moisture (double)
 weather_square (WeatherSquare)
 weather_model_file (WeatherModelFile)
 soil_moisture (double, mm)
