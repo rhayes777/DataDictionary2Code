@@ -60,6 +60,12 @@ class Relationship:
         first_class.relationships.append(self)
         second_class.relationships.append(self)
 
+    def write_foreign_key(self, attribute, cls, f):
+        f.write("%s%s_id = Column(Integer, ForeignKey(\"%s.id\", ondelete=\"%s\"))" % (NEW_LINE_INDENT,
+                                                                                       attribute,
+                                                                                       cls.tablename,
+                                                                                       self.ondelete))
+
 
 class OneToMany(Relationship):
     def write_for_class(self, cls, f):
@@ -68,10 +74,7 @@ class OneToMany(Relationship):
                 NEW_LINE_INDENT, self.first_attribute, self.second_class.name,
                 self.second_attribute))
         elif cls == self.second_class:
-            f.write("%s%s_id = Column(Integer, ForeignKey(\"%s.id\", ondelete=\"%s\"))" % (NEW_LINE_INDENT,
-                                                                                           self.second_attribute,
-                                                                                           self.second_class.tablename,
-                                                                                           self.ondelete))
+            self.write_foreign_key(self.second_attribute, self.second_class, f)
         else:
             raise AssertionError("Class does not belong to relationship")
 
@@ -86,10 +89,7 @@ class OneToOne(Relationship):
             f.write("%s%s = relationship(\"%s\", back_populates=\"%s\")" % (
                 NEW_LINE_INDENT, self.second_attribute, self.first_class.name,
                 self.first_attribute))
-            f.write("%s%s_id = Column(Integer, ForeignKey(\"%s.id\", ondelete=\"%s\"))" % (NEW_LINE_INDENT,
-                                                                                           self.second_attribute,
-                                                                                           self.second_class.tablename,
-                                                                                           self.ondelete))
+            self.write_foreign_key(self.second_attribute, self.second_class, f)
         else:
             raise AssertionError("Class does not belong to relationship")
 
