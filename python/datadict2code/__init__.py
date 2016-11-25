@@ -1,3 +1,5 @@
+import re
+
 INDENT = "    "
 NEW_LINE_INDENT = "\n%s" % INDENT
 
@@ -14,12 +16,18 @@ Base = declarative_base()
 """
 
 
+def lower_camel_case(name):
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+
 class Class:
     def __init__(self, name):
         self.name = name
         self.attributes = []
         self.type_names = set()
         self.relationships = []
+        self.tablename = lower_camel_case(name)
 
     def add_attribute(self, name, type_name):
         type_name = type_name.title()
@@ -37,26 +45,36 @@ class Class:
             f.write("%s%s = Column(%s)" % (NEW_LINE_INDENT, attribute[0], attribute[1]))
 
         for relationship in self.relationships:
-            f.write("%s%s = relationship(\"%s\", backref=\"%s\")" % (
-                NEW_LINE_INDENT, relationship.first_attribute, relationship.second_class.name,
-                relationship.second_attribute))
-        
+            relationship.write_for_class(self, f)
+
         if not self.attributes and not self.relationships:
             f.write("%spass" % NEW_LINE_INDENT)
 
 
 class Relationship:
-    def __init__(self, first_class, second_class, first_attribute, second_attribute):
+    def __init__(self, first_class, second_class, first_attribute, second_attribute, ondelete="SET NULL"):
         self.first_class = first_class
         self.second_class = second_class
         self.first_attribute = first_attribute
         self.second_attribute = second_attribute
+        self.ondelete = ondelete
         first_class.relationships.append(self)
         second_class.relationships.append(self)
 
 
 class OneToMany(Relationship):
-    pass
+    def write_for_class(self, cls, f):
+        if cls == self.first_class:
+            f.write("%s%s = relationship(\"%s\", backref=\"%s\")" % (
+                NEW_LINE_INDENT, self.first_attribute, self.second_class.name,
+                self.second_attribute))
+        elif cls == self.second_class:
+            f.write("%s%s_id = Column(Integer, ForeignKey(\"%s.id\", ondelete=\"%s\"))" % (NEW_LINE_INDENT,
+                                                                                     self.second_attribute,
+                                                                                     self.second_class.tablename,
+                                                                                     self.ondelete))
+        else:
+            raise AssertionError("Class does not belong to relationship")
 
 
 class Maker:
@@ -78,6 +96,8 @@ class Maker:
     def write(self):
         with open("%s.py" % self.filename, "w") as f:
             f.write(HEAD_TEXT)
+            if self.is_relationship():
+                self.type_names.add("Integer")
             if self.type_names:
                 f.write("\nfrom sqlalchemy import %s" % ", ".join(self.type_names))
             if self.is_relationship():
