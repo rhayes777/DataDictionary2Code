@@ -54,10 +54,10 @@ class WriterTestCase(unittest.TestCase):
         self.assertTrue(
             "Test" in map(lambda parts: parts[0], inspect.getmembers(model_attribute_creation, inspect.isclass)))
 
-        self.assertEqual(get_attribute_double(model_attribute_creation, "Test", "first_name")[0], "first_name")
-        self.assertEqual(get_attribute_double(model_attribute_creation, "Test", "flt")[0], "flt")
-        self.assertEqual(get_attribute_double(model_attribute_creation, "Test", "intg")[0], "intg")
-        self.assertEqual(get_attribute_double(model_attribute_creation, "Test", "dt")[0], "dt")
+        self.assertAttributeExists(model_attribute_creation, "Test", "first_name")
+        self.assertAttributeExists(model_attribute_creation, "Test", "flt")
+        self.assertAttributeExists(model_attribute_creation, "Test", "intg")
+        self.assertAttributeExists(model_attribute_creation, "Test", "dt")
 
         self.assertTrue(isinstance(get_attribute_double(model_attribute_creation, "Test", "dt")[1].type, DateTime))
         self.assertTrue(isinstance(get_attribute_double(model_attribute_creation, "Test", "flt")[1].type, Float))
@@ -76,8 +76,8 @@ class WriterTestCase(unittest.TestCase):
         writer.write()
         import model_one_to_many_relationships
 
-        self.assertEqual(get_attribute_double(model_one_to_many_relationships, "Parent", "children")[0], "children")
-        self.assertEqual(get_attribute_double(model_one_to_many_relationships, "Child", "parent_id")[0], "parent_id")
+        self.assertAttributeExists(model_one_to_many_relationships, "Parent", "children")
+        self.assertAttributeExists(model_one_to_many_relationships, "Child", "parent_id")
 
     def test_one_to_one_relationship(self):
         writer = Writer("model_one_to_one_relationship")
@@ -89,11 +89,16 @@ class WriterTestCase(unittest.TestCase):
         writer.add_class(second)
 
         writer.write()
-
         import model_one_to_one_relationship
 
         self.assertAttributeExists(model_one_to_one_relationship, "First", "second")
         self.assertAttributeExists(model_one_to_one_relationship, "Second", "first")
+
+    # def test_many_to_many_relationship(self):
+    #     writer = Writer("model_many_to_many_relationship")
+    #     first = Class("First")
+    #     second = Class("Second")
+    #     ManyT
 
 
 if __name__ == "__main__":
