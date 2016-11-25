@@ -30,6 +30,20 @@ class Class:
         self.type_names.add(type_name)
         self.attributes.append((name, type_name))
 
+    def write(self, f):
+        f.write("\n\nclass %s:" % self.name)
+
+        for attribute in self.attributes:
+            f.write("%s%s = Column(%s)" % (NEW_LINE_INDENT, attribute[0], attribute[1]))
+
+        for relationship in self.relationships:
+            f.write("%s%s = relationship(\"%s\", backref=\"%s\")" % (
+                NEW_LINE_INDENT, relationship.first_attribute, relationship.second_class.name,
+                relationship.second_attribute))
+        
+        if not self.attributes and not self.relationships:
+            f.write("%spass" % NEW_LINE_INDENT)
+
 
 class Relationship:
     def __init__(self, first_class, second_class, first_attribute, second_attribute):
@@ -70,15 +84,4 @@ class Maker:
                 f.write("\nfrom sqlalchemy import ForeignKey")
                 f.write("\nfrom sqlalchemy.orm import relationship")
             for cls in self.classes:
-                f.write("\n\nclass %s:" % cls.name)
-
-                for attribute in cls.attributes:
-                    f.write("%s%s = Column(%s)" % (NEW_LINE_INDENT, attribute[0], attribute[1]))
-
-                for relationship in cls.relationships:
-                    f.write("%s%s = relationship(\"%s\", backref=\"%s\")" % (
-                        NEW_LINE_INDENT, relationship.first_attribute, relationship.second_class.name,
-                        relationship.second_attribute))
-                    # comments = db.relationship("Comment", backref="session")
-                if not cls.attributes and not self.is_relationship():
-                    f.write("%spass" % NEW_LINE_INDENT)
+                cls.write(f)
