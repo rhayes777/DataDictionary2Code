@@ -1,5 +1,5 @@
 import unittest
-from datadict2code import *
+from datadict2code.writer import *
 import inspect
 import os
 from sqlalchemy import DateTime, String, Integer, Float
