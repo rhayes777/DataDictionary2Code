@@ -69,8 +69,8 @@ class BasicTestCase(unittest.TestCase):
         maker.write()
         import model_relationships
 
-        print(inspect.getmembers(model_relationships, inspect.isclass))
         self.assertEqual(get_attribute_double(model_relationships, "Parent", "children")[0], "children")
+        self.assertEqual(get_attribute_double(model_relationships, "Parent", "children")[1].backref, "parent")
 
 
 if __name__ == "__main__":
