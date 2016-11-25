@@ -76,6 +76,26 @@ class OneToMany(Relationship):
             raise AssertionError("Class does not belong to relationship")
 
 
+class OneToOne(Relationship):
+    def write_for_class(self, cls, f):
+        if cls == self.first_class:
+            f.write("%s%s = relationship(\"%s\", uselist=False, back_populates=\"%s\")" % (
+                NEW_LINE_INDENT, self.first_attribute, self.second_class.name,
+                self.second_attribute))
+        elif cls == self.second_class:
+            f.write("%s%s = relationship(\"%s\", back_populates=\"%s\")" % (
+                NEW_LINE_INDENT, self.second_attribute, self.first_class.name,
+                self.first_attribute))
+            f.write("%s%s_id = Column(Integer, ForeignKey(\"%s.id\", ondelete=\"%s\"))" % (NEW_LINE_INDENT,
+                                                                                           self.second_attribute,
+                                                                                           self.second_class.tablename,
+                                                                                           self.ondelete))
+        else:
+            raise AssertionError("Class does not belong to relationship")
+    # child = relationship("Child", uselist=False, back_populates="parent")
+    #     parent = relationship("Parent", back_populates="child")
+
+
 class Maker:
     def __init__(self, filename="model"):
         self.filename = filename

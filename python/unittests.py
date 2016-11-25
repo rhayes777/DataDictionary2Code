@@ -21,8 +21,14 @@ def get_attribute_double(module, class_name, function_name):
 
 
 class BasicTestCase(unittest.TestCase):
-    # def tearDown(self):
-    #     os.system("rm model*")
+    def tearDown(self):
+        os.system("rm model*")
+
+    def assertClassExists(self, module, class_name):
+        self.assertIsNotNone(get_class_double(module, class_name))
+
+    def assertAttributeExists(self, module, class_name, attribute_name):
+        self.assertIsNotNone(get_attribute_double(module, class_name, attribute_name))
 
     def test_code_creation(self):
         maker = Maker("model_code_creation")
@@ -59,8 +65,8 @@ class BasicTestCase(unittest.TestCase):
         self.assertTrue(
             isinstance(get_attribute_double(model_attribute_creation, "Test", "first_name")[1].type, String))
 
-    def test_relationships(self):
-        maker = Maker("model_relationships")
+    def test_one_to_many_relationship(self):
+        maker = Maker("model_one_to_many_relationships")
         parent = Class("Parent")
         child = Class("Child")
         OneToMany(parent, child, "children", "parent")
@@ -68,12 +74,26 @@ class BasicTestCase(unittest.TestCase):
         maker.add_class(parent)
         maker.add_class(child)
         maker.write()
-        import model_relationships
+        import model_one_to_many_relationships
 
-        self.assertEqual(get_attribute_double(model_relationships, "Parent", "children")[0], "children")
-        print(dir(get_attribute_double(model_relationships, "Parent", "children")[1]))
+        self.assertEqual(get_attribute_double(model_one_to_many_relationships, "Parent", "children")[0], "children")
+        self.assertEqual(get_attribute_double(model_one_to_many_relationships, "Child", "parent_id")[0], "parent_id")
 
-        self.assertEqual(get_attribute_double(model_relationships, "Child", "parent_id")[0], "parent_id")
+    def test_one_to_one_relationship(self):
+        maker = Maker("model_one_to_one_relationship")
+        first = Class("First")
+        second = Class("Second")
+        OneToOne(first, second, "second", "first")
+
+        maker.add_class(first)
+        maker.add_class(second)
+
+        maker.write()
+
+        import model_one_to_one_relationship
+
+        self.assertAttributeExists(model_one_to_one_relationship, "First", "second")
+        self.assertAttributeExists(model_one_to_one_relationship, "Second", "first")
 
 
 if __name__ == "__main__":
