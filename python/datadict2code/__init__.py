@@ -10,6 +10,6 @@ class Parser:
     def class_list(self):
         class_list = []
         for row in self.reader:
-            class_list.append(writer.Class(row[0]))
+            class_list.append(writer.Class(row[0], description=row[1]))
         return class_list
 

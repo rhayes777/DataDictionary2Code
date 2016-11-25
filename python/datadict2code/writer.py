@@ -22,13 +22,14 @@ def lower_camel_case(name):
 
 
 class Class:
-    def __init__(self, name, parent=None):
+    def __init__(self, name, parent=None, description=None):
         self.name = name
         self.attributes = []
         self.type_names = set()
         self.relationships = []
         self.tablename = lower_camel_case(name)
         self.parent = parent
+        self.description = description
 
     def add_attribute(self, name, type_name):
         type_name = type_name.title()
@@ -40,7 +41,10 @@ class Class:
         self.attributes.append((name, type_name))
 
     def write(self, f):
-        f.write("\n\n\nclass %s(%s):" % (self.name, self.parent.name if self.parent else "Base"))
+        f.write("\n\n\n")
+        if self.description:
+            f.write("# %s", self.description)
+        f.write("class %s(%s):" % (self.name, self.parent.name if self.parent else "Base"))
         f.write("%s__tablename__ = '%s'" % (NEW_LINE_INDENT, self.tablename))
         if self.parent:
             f.write("%sid = Column(Integer, ForeignKey('%s.id', ondelete='CASCADE'), primary_key=True)" % (

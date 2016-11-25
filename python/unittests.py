@@ -130,6 +130,7 @@ class ParserTestCase(unittest.TestCase):
         class_list = parser.class_list()
         self.assertEqual(len(class_list), 52)
         self.assertEqual("Client", class_list[0].name)
+        self.assertEqual("A client of Farming Online. ", class_list[0].description)
 
 
 if __name__ == "__main__":
