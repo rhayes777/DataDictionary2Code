@@ -94,11 +94,20 @@ class WriterTestCase(unittest.TestCase):
         self.assertAttributeExists(model_one_to_one_relationship, "First", "second")
         self.assertAttributeExists(model_one_to_one_relationship, "Second", "first")
 
-    # def test_many_to_many_relationship(self):
-    #     writer = Writer("model_many_to_many_relationship")
-    #     first = Class("First")
-    #     second = Class("Second")
-    #     ManyT
+    def test_many_to_many_relationship(self):
+        writer = Writer("model_many_to_many_relationship")
+        first = Class("First")
+        second = Class("Second")
+        ManyToMany(first, second, "second_list", "first_list")
+
+        writer.add_class(first)
+        writer.add_class(second)
+
+        writer.write()
+        import model_many_to_many_relationship
+
+        self.assertAttributeExists(model_many_to_many_relationship, "First", "second_list")
+        self.assertAttributeExists(model_many_to_many_relationship, "Second", "first_list")
 
 
 if __name__ == "__main__":
