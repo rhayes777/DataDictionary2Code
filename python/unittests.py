@@ -20,7 +20,7 @@ def get_attribute_double(module, class_name, function_name):
         return ls[0]
 
 
-class BasicTestCase(unittest.TestCase):
+class WriterTestCase(unittest.TestCase):
     def tearDown(self):
         os.system("rm model*")
 
@@ -31,24 +31,24 @@ class BasicTestCase(unittest.TestCase):
         self.assertIsNotNone(get_attribute_double(module, class_name, attribute_name))
 
     def test_code_creation(self):
-        maker = Maker("model_code_creation")
-        maker.add_class(Class("Test"))
-        maker.add_class(Class("SecondClass"))
-        maker.write()
+        writer = Writer("model_code_creation")
+        writer.add_class(Class("Test"))
+        writer.add_class(Class("SecondClass"))
+        writer.write()
         import model_code_creation
         self.assertTrue("Test" in map(lambda parts: parts[0], inspect.getmembers(model_code_creation, inspect.isclass)))
         self.assertIsNotNone(get_class_double(model_code_creation, "SecondClass"))
         self.assertEqual("second_class", get_class_double(model_code_creation, "SecondClass")[1].__tablename__)
 
     def test_attribute_creation(self):
-        maker = Maker("model_attribute_creation")
+        writer = Writer("model_attribute_creation")
         cls = Class("Test")
         cls.add_attribute("first_name", "string")
         cls.add_attribute("flt", "double")
         cls.add_attribute("intg", "integer")
         cls.add_attribute("dt", "datetime")
-        maker.add_class(cls)
-        maker.write()
+        writer.add_class(cls)
+        writer.write()
         import model_attribute_creation
 
         self.assertTrue(
@@ -66,29 +66,29 @@ class BasicTestCase(unittest.TestCase):
             isinstance(get_attribute_double(model_attribute_creation, "Test", "first_name")[1].type, String))
 
     def test_one_to_many_relationship(self):
-        maker = Maker("model_one_to_many_relationships")
+        writer = Writer("model_one_to_many_relationships")
         parent = Class("Parent")
         child = Class("Child")
         OneToMany(parent, child, "children", "parent")
 
-        maker.add_class(parent)
-        maker.add_class(child)
-        maker.write()
+        writer.add_class(parent)
+        writer.add_class(child)
+        writer.write()
         import model_one_to_many_relationships
 
         self.assertEqual(get_attribute_double(model_one_to_many_relationships, "Parent", "children")[0], "children")
         self.assertEqual(get_attribute_double(model_one_to_many_relationships, "Child", "parent_id")[0], "parent_id")
 
     def test_one_to_one_relationship(self):
-        maker = Maker("model_one_to_one_relationship")
+        writer = Writer("model_one_to_one_relationship")
         first = Class("First")
         second = Class("Second")
         OneToOne(first, second, "second", "first")
 
-        maker.add_class(first)
-        maker.add_class(second)
+        writer.add_class(first)
+        writer.add_class(second)
 
-        maker.write()
+        writer.write()
 
         import model_one_to_one_relationship
 

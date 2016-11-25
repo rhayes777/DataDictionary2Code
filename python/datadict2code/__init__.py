@@ -96,7 +96,7 @@ class OneToOne(Relationship):
     #     parent = relationship("Parent", back_populates="child")
 
 
-class Maker:
+class Writer:
     def __init__(self, filename="model"):
         self.filename = filename
         self.classes = []
