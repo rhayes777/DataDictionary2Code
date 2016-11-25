@@ -39,8 +39,9 @@ class Class:
         self.attributes.append((name, type_name))
 
     def write(self, f):
-        f.write("\n\nclass %s:" % self.name)
-        f.write("%s__tablename__='%s'" %(NEW_LINE_INDENT, self.tablename))
+        f.write("\n\nclass %s(Base):" % self.name)
+        f.write("%s__tablename__ = '%s'" %(NEW_LINE_INDENT, self.tablename))
+        f.write("%sid = Column(Integer, primary_key=True)" % NEW_LINE_INDENT)
 
         for attribute in self.attributes:
             f.write("%s%s = Column(%s)" % (NEW_LINE_INDENT, attribute[0], attribute[1]))
@@ -81,6 +82,7 @@ class Maker:
         self.classes = []
         self.relationships = []
         self.type_names = set()
+        self.type_names.add("Integer")
 
     def add_class(self, cls):
         self.classes.append(cls)
@@ -94,8 +96,6 @@ class Maker:
     def write(self):
         with open("%s.py" % self.filename, "w") as f:
             f.write(HEAD_TEXT)
-            if self.is_relationship():
-                self.type_names.add("Integer")
             if self.type_names:
                 f.write("\nfrom sqlalchemy import %s" % ", ".join(self.type_names))
             if self.is_relationship():
