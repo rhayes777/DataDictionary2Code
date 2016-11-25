@@ -2,7 +2,7 @@ import unittest
 from datadict2code import Maker, Class
 import inspect
 import os
-from sqlalchemy.types import DateTime, String, Integer, Float
+from sqlalchemy import DateTime, String, Integer, Float
 
 
 def get_class_double(module, class_name):
@@ -56,6 +56,18 @@ class BasicTestCase(unittest.TestCase):
         self.assertTrue(isinstance(get_attribute_double(model, "Test", "flt")[1].type, Float))
         self.assertTrue(isinstance(get_attribute_double(model, "Test", "intg")[1].type, Integer))
         self.assertTrue(isinstance(get_attribute_double(model, "Test", "first_name")[1].type, String))
+
+    def test_relationships(self):
+        parent = Class("Parent")
+        child = Class("Child")
+        parent.add_to_many("children", "parent", child)
+
+        self.maker.add_class(parent)
+        self.maker.add_class(child)
+        self.maker.write()
+        import model
+
+        self.assertEqual(get_attribute_double(model, "Parent", "children")[0], "children")
 
 
 if __name__ == "__main__":
