@@ -97,24 +97,27 @@ class OneToOne(Relationship):
 class ManyToMany(Relationship):
     def write_for_class(self, cls, f):
         if cls == self.first_class:
-            f.write("%s%s = relationship(\"%s\", secondary=%s_%s_association, back_populates=\"%s\")" % (
-                NEW_LINE_INDENT, self.first_attribute, self.second_class.name, self.first_class.tablename,
-                self.second_class.tablename,
+            f.write("%s%s = relationship(\"%s\", secondary=%s, back_populates=\"%s\")" % (
+                NEW_LINE_INDENT, self.first_attribute, self.second_class.name, self.association_table_name(),
                 self.second_attribute))
         elif cls == self.second_class:
-            f.write("%s%s = relationship(\"%s\", secondary=%s_%s_association, back_populates=\"%s\")" % (
-                NEW_LINE_INDENT, self.second_attribute, self.first_class.name, self.first_class.tablename,
-                self.second_class.tablename,
+            f.write("%s%s = relationship(\"%s\", secondary=%s, back_populates=\"%s\")" % (
+                NEW_LINE_INDENT, self.second_attribute, self.first_class.name, self.association_table_name(),
                 self.first_attribute))
         else:
             raise AssertionError("Class does not belong to relationship")
 
     def write_association_table(self, f):
         f.write(
-            """{0}{1}_{2}_association = Table('{1}_{2}_association', Base.metadata, 
-            Column('{1}_id', Integer, ForeignKey('{1}.id')), 
-            Column('{2}_id', Integer, ForeignKey('{2}.id')))""".format('\n', self.first_class.tablename,
+            """{0}{1} = Table('{1}', Base.metadata,
+            Column('{2}_id', Integer, ForeignKey('{2}.id')),
+            Column('{3}_id', Integer, ForeignKey('{3}.id')))""".format('\n', self.association_table_name(),
+                                                                       self.first_class.tablename,
                                                                        self.second_class.tablename))
+
+    def association_table_name(self):
+        return "%s_%s_association" % (self.first_class.tablename,
+                                      self.second_class.tablename)
 
 
 class Writer:
