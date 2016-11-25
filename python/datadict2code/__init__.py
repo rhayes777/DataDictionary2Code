@@ -40,15 +40,13 @@ class Class:
 
     def write(self, f):
         f.write("\n\nclass %s:" % self.name)
+        f.write("%s__tablename__='%s'" %(NEW_LINE_INDENT, self.tablename))
 
         for attribute in self.attributes:
             f.write("%s%s = Column(%s)" % (NEW_LINE_INDENT, attribute[0], attribute[1]))
 
         for relationship in self.relationships:
             relationship.write_for_class(self, f)
-
-        if not self.attributes and not self.relationships:
-            f.write("%spass" % NEW_LINE_INDENT)
 
 
 class Relationship:

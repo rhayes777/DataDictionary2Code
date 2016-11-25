@@ -31,7 +31,8 @@ class BasicTestCase(unittest.TestCase):
         maker.write()
         import model_code_creation
         self.assertTrue("Test" in map(lambda parts: parts[0], inspect.getmembers(model_code_creation, inspect.isclass)))
-        self.assertTrue("SecondClass", inspect.getmembers(model_code_creation, inspect.isclass)[1][0])
+        self.assertIsNotNone(get_class_double(model_code_creation, "SecondClass"))
+        self.assertEqual("second_class", get_class_double(model_code_creation, "SecondClass")[1].__tablename__)
 
     def test_attribute_creation(self):
         maker = Maker("model_attribute_creation")
