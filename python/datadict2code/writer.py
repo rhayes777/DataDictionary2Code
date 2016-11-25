@@ -97,13 +97,9 @@ class OneToOne(Relationship):
 class ManyToMany(Relationship):
     def write_for_class(self, cls, f):
         if cls == self.first_class:
-            f.write("%s%s = relationship(\"%s\", secondary=%s, back_populates=\"%s\")" % (
-                NEW_LINE_INDENT, self.first_attribute, self.second_class.name, self.association_table_name(),
-                self.second_attribute))
+            self.write_relationship(self.first_attribute, self.second_attribute, self.second_class, f)
         elif cls == self.second_class:
-            f.write("%s%s = relationship(\"%s\", secondary=%s, back_populates=\"%s\")" % (
-                NEW_LINE_INDENT, self.second_attribute, self.first_class.name, self.association_table_name(),
-                self.first_attribute))
+            self.write_relationship(self.second_attribute, self.first_attribute, self.first_class, f)
         else:
             raise AssertionError("Class does not belong to relationship")
 
@@ -114,6 +110,11 @@ class ManyToMany(Relationship):
             Column('{3}_id', Integer, ForeignKey('{3}.id')))""".format('\n', self.association_table_name(),
                                                                        self.first_class.tablename,
                                                                        self.second_class.tablename))
+
+    def write_relationship(self, attribute_a, attribute_b, cls, f):
+        f.write("%s%s = relationship(\"%s\", secondary=%s, back_populates=\"%s\")" % (
+            NEW_LINE_INDENT, attribute_a, cls.name, self.association_table_name(),
+            attribute_b))
 
     def association_table_name(self):
         return "%s_%s_association" % (self.first_class.tablename,
