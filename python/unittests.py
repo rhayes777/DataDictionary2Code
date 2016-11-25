@@ -132,13 +132,14 @@ class ParserTestCase(unittest.TestCase):
         self.parser.close()
 
     def test_reading_class_names(self):
-        class_list = self.parser.class_list()
+        class_list = self.parser.classes
         self.assertEqual(len(class_list), 52)
         self.assertEqual("Client", class_list[0].name)
         self.assertEqual("A client of Farming Online. ", class_list[0].description)
 
-    # def test_reading_class_attributes(self):
-
+    def test_reading_class_attributes(self):
+        self.parser.add_attributes()
+        self.assertTrue(("first_name", "String") in self.parser.classes[0].attributes)
 
 if __name__ == "__main__":
     unittest.main()
