@@ -125,14 +125,19 @@ class WriterTestCase(unittest.TestCase):
 
 
 class ParserTestCase(unittest.TestCase):
+    def setUp(self):
+        self.parser = Parser("example.csv")
+
+    def tearDown(self):
+        self.parser.close()
+
     def test_reading_class_names(self):
-        parser = Parser("example.csv")
-        class_list = parser.class_list()
+        class_list = self.parser.class_list()
         self.assertEqual(len(class_list), 52)
         self.assertEqual("Client", class_list[0].name)
         self.assertEqual("A client of Farming Online. ", class_list[0].description)
 
-
+    # def test_reading_class_attributes(self):
 
 
 if __name__ == "__main__":

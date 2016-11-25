@@ -13,3 +13,6 @@ class Parser:
             class_list.append(writer.Class(row[0], description=row[1]))
         return class_list
 
+    def close(self):
+        self.f.close()
+
