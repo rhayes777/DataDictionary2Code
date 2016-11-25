@@ -1,6 +1,3 @@
-ModelObject,Base object of all other objects.,"id
-date_created (datetime)
-date_updated (datetime)",,,,
 Client,A client of Farming Online. ,"first_name (string)
 last_name (string)
 company_name (string?)
