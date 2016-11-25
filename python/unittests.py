@@ -127,7 +127,9 @@ class WriterTestCase(unittest.TestCase):
 class ParserTestCase(unittest.TestCase):
     def test_opening_parser(self):
         parser = Parser("example.csv")
-        self.assertEqual(len(parser.class_list()), 52)
+        class_list = parser.class_list()
+        self.assertEqual(len(class_list), 52)
+        self.assertEqual("Client", class_list[0].name)
 
 
 if __name__ == "__main__":
